@@ -1,28 +1,49 @@
 package serviceImpl;
 
-import service.UrlEncoder;
-import service.UrlRepository;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
+
 import service.UrlShortenerService;
 
 public class UrlShortenerServiceImpl implements UrlShortenerService {
-    private final UrlRepository urlRepository;
-    private final UrlEncoder urlEncoder;
+	 private final Map<String, String> idToUrl = new HashMap<>();
+	    private final Map<String, String> urlToId = new HashMap<>();
+	    private long counter = 1; // simple auto-increment ID
 
-    public UrlShortenerServiceImpl(UrlRepository urlRepository, UrlEncoder urlEncoder) {
-        this.urlRepository = urlRepository;
-        this.urlEncoder = urlEncoder;
-    }
+	   
+	    private static final String BASE62 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    @Override
-    public String shortener(String fullUrl) {
-        String id = urlRepository.save(fullUrl); // persists returns unique id
-        return urlEncoder.encode(id);
-    }
+	    @Override
+	    public String shortener(String fullUrl) {
+	        // If already exists, return existing short code
+	        if (urlToId.containsKey(fullUrl)) {
+	            return urlToId.get(fullUrl);
+	        }
 
-    @Override
-    public String fullURL(String shortUrl) {
-        String id = urlEncoder.decode(shortUrl);
-        return urlRepository.findById(id);
-    }
+	       
+	        String shortCode = encode(counter++);
+	        idToUrl.put(shortCode, fullUrl);
+	        urlToId.put(fullUrl, shortCode);
+
+	        return shortCode;
+	    }
+
+	    @Override
+	    public String fullURL(String shortUrl) {
+	        return idToUrl.get(shortUrl);
+	    }
+
+	    
+	    private String encode(long id) {
+	        StringBuilder sb = new StringBuilder();
+	        while (id > 0) {
+	            sb.append(BASE62.charAt((int) (id % 62)));
+	            id /= 62;
+	        }
+	        return sb.reverse().toString();
+	    }
+    
+    
 }
 
