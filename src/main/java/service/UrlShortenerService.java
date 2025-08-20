@@ -22,19 +22,6 @@ public interface UrlShortenerService {
      */
     Optional<String> getFullUrl(String shortCode);
     
-    /**
-     * Gets the total number of URLs stored.
-     * 
-     * @return the count of stored URLs
-     */
- //   long getUrlCount();
-    
-    /**
-     * Checks if a URL has been shortened before.
-     * 
-     * @param fullUrl the URL to check
-     * @return true if URL exists, false otherwise
-     */
- //   boolean urlExists(String fullUrl);
+   
 }
 

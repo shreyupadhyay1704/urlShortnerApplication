@@ -23,7 +23,6 @@ public final class UrlShortenerServiceImpl implements UrlShortenerService {
         this.counter = new AtomicLong(config.getInitialCounter());
     }
     
-    // Constructor for testing with custom encoder and config
     UrlShortenerServiceImpl(Base62Encoder encoder, ConfigurationManager config) {
         this.encoder = encoder;
         this.config = config;
